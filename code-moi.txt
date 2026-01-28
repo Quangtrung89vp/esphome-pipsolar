@@ -1,0 +1,279 @@
+esphome:
+  name: esphome-inverter
+  friendly_name: ESPHome inverter
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+  level: VERY_VERBOSE
+  logs:
+    esp32_ble_tracker: INFO
+    esp32_ble_client: INFO
+
+
+api:
+
+
+ota:
+  - platform: esphome
+# Example configuration entry
+web_server:
+  port: 80
+    
+
+wifi:
+  ssid: "Huy Viet"
+  password: "khongcoo"
+
+  manual_ip:
+    static_ip: 192.168.1.235
+    gateway: 192.168.1.1
+    subnet: 255.255.255.0
+    dns1: 8.8.8.8
+    dns2: 1.1.1.1
+  ap:
+      ssid: "quang trung" 
+
+captive_portal:
+
+substitutions:
+  name: pipsolar
+  tx_pin: GPIO16
+  rx_pin: GPIO17
+  bms_name: "JK BMS"
+uart:
+  - id: uart_0
+    baud_rate: 2400
+    tx_pin: ${tx_pin}
+    rx_pin: ${rx_pin}
+
+external_components:
+  - source: github://syssi/esphome-jk-bms
+    refresh: 0s
+
+
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: C8:47:80:14:81:8D
+    id: client0
+
+jk_bms_ble:
+  - id: bms0
+    ble_client_id: client0
+    protocol_version: JK02_32S
+
+
+
+pipsolar:
+  - id: inverter0
+    uart_id: uart_0
+
+
+
+
+
+
+sensor:
+  - platform: pipsolar
+    pipsolar_id: inverter0
+
+    grid_rating_voltage: { name: "${name} grid_rating_voltage" }
+    grid_rating_current: { name: "${name} grid_rating_current" }
+    ac_output_rating_voltage: { name: "${name} ac_output_rating_voltage" }
+    ac_output_rating_frequency: { name: "${name} ac_output_rating_frequency" }
+    ac_output_rating_current: { name: "${name} ac_output_rating_current" }
+    ac_output_rating_apparent_power: { name: "${name} ac_output_rating_apparent_power" }
+    ac_output_rating_active_power: { name: "${name} ac_output_rating_active_power" }
+    battery_rating_voltage: { name: "${name} battery_rating_voltage" }
+    battery_recharge_voltage: { name: "${name} battery_recharge_voltage" }
+    battery_under_voltage: { name: "${name} battery_under_voltage" }
+    battery_bulk_voltage: { name: "${name} battery_bulk_voltage" }
+    battery_float_voltage: { name: "${name} battery_float_voltage" }
+    battery_type: { name: "${name} battery_type" }
+    input_voltage_range: { name: "${name} input_voltage_range" }
+    output_source_priority: { name: "${name} output_source_priority" }
+    charger_source_priority: { name: "${name} charger_source_priority" }
+    parallel_max_num: { name: "${name} parallel_max_num" }
+    machine_type: { name: "${name} machine_type" }
+    topology: { name: "${name} topology" }
+    output_mode: { name: "${name} output_mode" }
+    battery_redischarge_voltage: { name: "${name} battery_redischarge_voltage" }
+    pv_ok_condition_for_parallel: { name: "${name} pv_ok_condition_for_parallel" }
+    pv_power_balance: { name: "${name} pv_power_balance" }
+
+    current_max_ac_charging_current: { name: "${name} current_max_ac_charging_current" }
+    current_max_charging_current: { name: "${name} current_max_charging_current" }
+
+    grid_voltage:
+      id: grid_voltage
+      name: "${name} grid_voltage"
+    grid_frequency: { name: "${name} grid_frequency" }
+    ac_output_voltage:
+      id: ac_output_voltage
+      name: "${name} ac_output_voltage"
+    ac_output_frequency: { name: "${name} ac_output_frequency" }
+    ac_output_apparent_power:
+      id: ac_apparent_power
+      name: "${name} ac_output_apparent_power"
+    ac_output_active_power:
+      id: load_power
+      name: "${name} ac_output_active_power"
+    output_load_percent: { name: "${name} output_load_percent" }
+    bus_voltage: { name: "${name} bus_voltage" }
+    battery_voltage:
+      id: battery_voltage
+      name: "${name} battery_voltage"
+    battery_charging_current:
+      id: battery_charge_current
+      name: "${name} battery_charging_current"
+    battery_capacity_percent: { name: "${name} battery_capacity_percent" }
+    inverter_heat_sink_temperature: { name: "${name} inverter_heat_sink_temperature" }
+    pv_input_current_for_battery:
+      id: pv_current
+      name: "${name} pv_input_current_for_battery"
+    pv_input_voltage:
+      id: pv_voltage
+      name: "${name} pv_input_voltage"
+    battery_voltage_scc: { name: "${name} battery_voltage_scc" }
+    battery_discharge_current:
+      id: battery_discharge_current
+      name: "${name} battery_discharge_current"
+    battery_voltage_offset_for_fans_on: { name: "${name} battery_voltage_offset_for_fans_on" }
+    pv_charging_power: { name: "${name} pv_charging_power" }
+ #-------------------------------------------
+  # Wifi signal component
+  #-------------------------------------------
+  - platform: wifi_signal
+    name: "Signal"
+    id: "signal_strange"
+    update_interval: 120s
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    min_cell_voltage:
+      name: "${bms_name} min cell voltage"
+    max_cell_voltage:
+      name: "${bms_name} max cell voltage"
+    min_voltage_cell:
+      name: "${bms_name} min voltage cell"
+    max_voltage_cell:
+      name: "${bms_name} max voltage cell"
+    delta_cell_voltage:
+      name: "${bms_name} delta cell voltage"
+    average_cell_voltage:
+      name: "${bms_name} average cell voltage"
+    cell_voltage_1:
+      name: "${bms_name} cell voltage 1"
+    cell_voltage_2:
+      name: "${bms_name} cell voltage 2"
+    cell_voltage_3:
+      name: "${bms_name} cell voltage 3"
+    cell_voltage_4:
+      name: "${bms_name} cell voltage 4"
+    cell_voltage_5:
+      name: "${bms_name} cell voltage 5"
+    cell_voltage_6:
+      name: "${bms_name} cell voltage 6"
+    cell_voltage_7:
+      name: "${bms_name} cell voltage 7"
+    cell_voltage_8:
+      name: "${bms_name} cell voltage 8"
+    total_voltage:
+      name: "${bms_name} total voltage"
+    current:
+      name: "${bms_name} current"
+    power:
+      name: "${bms_name} power"
+    state_of_charge:
+      name: "${bms_name} state of charge"
+
+    capacity_remaining:
+     name: "${bms_name} capacity remaining"
+
+    total_battery_capacity_setting:
+      name: "${bms_name} total battery capacity setting"
+    charging_cycles:
+      name: "${bms_name} charging cycles"
+    total_charging_cycle_capacity:
+      name: "${bms_name} total charging cycle capacity"
+    total_runtime:
+      name: "${bms_name} total runtime"
+    balancing_current:
+      name: "${bms_name} balancing current"
+    errors_bitmask:
+      name: "${bms_name} errors bitmask"
+    emergency_time_countdown:
+      name: "${bms_name} emergency time countdown"
+
+
+text_sensor:
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    device_mode:
+      name: "${name} device_mode"
+      filters:
+        map:
+          - P -> Power on mode
+          - S -> Standby mode
+          - L -> Line mode
+          - B -> Battery mode
+          - F -> Fault mode
+          - D -> Shutdown mode
+    last_qpigs: { name: "${name} last_qpigs" }
+    last_qpiri: { name: "${name} last_qpiri" }
+    last_qmod: { name: "${name} last_qmod" }
+    last_qflag: { name: "${name} last_qflag" }
+
+binary_sensor:
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    add_sbu_priority_version: { name: "${name} add_sbu_priority_version" }
+    configuration_status: { name: "${name} configuration_status" }
+    load_status: { name: "${name} load_status" }
+    battery_voltage_to_steady_while_charging: { name: "${name} battery_voltage_to_steady_while_charging" }
+    charging_status: { name: "${name} charging_status" }
+    ac_charging_status: { name: "${name} ac_charging_status" }
+    charging_to_floating_mode: { name: "${name} charging_to_floating_mode" }
+    switch_on: { name: "${name} switch_on" }
+   
+ 
+
+  - platform: jk_bms_ble
+    jk_bms_ble_id: bms0
+    balancing:
+      name: "${bms_name} balancing"
+    charging:
+      name: "${bms_name} charging"
+    discharging:
+      name: "${bms_name} discharging"
+    heating:
+      name: "${bms_name} heating"
+    online_status:
+      name: "${bms_name} online status"
+
+switch:
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    output_source_priority_utility:
+      name: "Output: Utility (SUB)"
+
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    output_source_priority_battery:
+      name: "Output: Battery (SBU)"
+
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    output_source_priority_solar:
+      name: "Output: Solar"
+
+
+
+
+
+
