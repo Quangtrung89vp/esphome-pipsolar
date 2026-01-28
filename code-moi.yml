@@ -53,6 +53,8 @@ uart:
 external_components:
   - source: github://syssi/esphome-jk-bms
     refresh: 0s
+  - source: https://github.com/Quangtrung89vp/esphome-pipsolar
+    refresh: 0s
 
 
 
@@ -271,6 +273,7 @@ switch:
     pipsolar_id: inverter0
     output_source_priority_solar:
       name: "Output: Solar"
+
 
 
 
