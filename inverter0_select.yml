@@ -1,0 +1,62 @@
+#-------------------------------------------
+# SELECTS
+#-------------------------------------------
+select:
+  #-------------------------------------------
+  # Output Source Priority
+  #-------------------------------------------
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    output_source_priority:
+      id: output_source_priority_select
+      name: "Chế Độ Tải"
+      optionsmap:
+        "SUB": "POP00"
+        "SBU": "POP02"
+      statusmap:
+        "0": "SUB"
+        "2": "SBU"
+
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    charger_source_priority:
+      id: charger_source_priority_select
+      name: "Chế Độ Sạc"
+      optionsmap:
+        "CSO": "PCP01"
+        "SNU": "PCP02"
+        "OSO": "PCP03"
+      statusmap:
+        "1": "CSO"
+        "2": "SNU"
+        "3": "OSO"
+
+ 
+
+
+  #-------------------------------------------
+  # Charger Grid Current
+  #-------------------------------------------
+  - platform: pipsolar
+    pipsolar_id: inverter0
+    current_max_ac_charging_current:
+      name: "Sạc Lưới"
+      entity_category: config
+      optionsmap:
+        "2A": "MUCHGC002"
+        "10A": "MUCHGC010"
+        "20A": "MUCHGC020"
+        "30A": "MUCHGC030"
+        "40A": "MUCHGC040"
+        "50A": "MUCHGC050"
+        "60A": "MUCHGC060"
+      
+        
+      statusmap:
+        "2": "2A"
+        "10": "10A"
+        "20": "20A"
+        "30": "30A"
+        "40": "40A"
+        "50": "50A"
+        "60": "60A"
